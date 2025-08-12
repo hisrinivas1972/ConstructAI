@@ -4,10 +4,16 @@ def app():
     st.title("Dashboard")
     st.write("Welcome to ConstructAI dashboard! Please enter your Google API key to continue.")
 
+    # Input box to accept the API key (hidden)
     google_api_key = st.text_input("Enter your Google API key", type="password")
 
+    # Save to session_state if provided
     if google_api_key:
-        st.success("API key entered!")
-        # Use google_api_key here for your API calls
+        st.session_state["google_api_key"] = google_api_key
+        st.success("✅ API key saved successfully!")
     else:
-        st.warning("Please enter your API key to use the app.")
+        # If already in session, show it’s still available
+        if "google_api_key" in st.session_state:
+            st.info("🔐 API key already set. You can use other tools from the sidebar.")
+        else:
+            st.warning("⚠️ Please enter your API key to use the app.")
