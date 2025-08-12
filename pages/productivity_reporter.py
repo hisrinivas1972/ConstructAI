@@ -3,15 +3,13 @@ import google.generativeai as genai
 
 def app():
     st.title("Productivity Reporter")
-    st.write("Report and analyze construction site productivity.")
+    st.write("Generate productivity reports and insights using AI.")
 
-    # Get the API key from session state
     google_api_key = st.session_state.get("google_api_key", "")
     if not google_api_key:
         st.warning("⚠️ Please enter your Google API key on the Dashboard first.")
         return
 
-    # Configure Generative AI with the user’s key
     try:
         genai.configure(api_key=google_api_key)
     except Exception as e:
@@ -20,34 +18,32 @@ def app():
 
     st.success("✅ API key loaded. Gemini AI is ready.")
 
-    # Default example prompt
-    default_prompt = (
-        "Workers are experiencing delays due to unexpected equipment failure. "
-        "Please summarize the impact on productivity."
+    example_prompt = (
+        "Summarize the productivity of a construction crew that completed 50% of the scheduled work "
+        "in half the expected time but faced delays due to weather."
     )
 
-    prompt_option = st.radio(
-        "How would you like to proceed?",
-        ["Use example report", "Write my own report"]
+    option = st.radio(
+        "Choose an option:",
+        ("Use example report", "Enter your own data or observations")
     )
 
     prompt = ""
 
-    if prompt_option == "Use example report":
-        prompt = default_prompt
-        st.info(f"Using example report:\n\n{prompt}")
+    if option == "Use example report":
+        prompt = example_prompt
+        st.info(f"Using example:\n\n{prompt}")
     else:
-        prompt = st.text_area("Enter your productivity report or issue description:")
+        prompt = st.text_area("Enter your data or observations:")
 
-    if st.button("Analyze Productivity"):
+    if st.button("Generate Report"):
         if not prompt:
-            st.warning("Please enter a productivity report or issue to analyze.")
+            st.warning("Please enter data or observations to generate report.")
             return
-
         try:
-            model = genai.GenerativeModel("gemini-pro")
+            model = genai.GenerativeModel("models/chat-bison-001")
             response = model.generate_content(prompt)
-            st.subheader("🧠 AI Productivity Analysis")
+            st.subheader("📊 Productivity Report")
             st.write(response.text)
         except Exception as e:
             st.error(f"AI Error: {e}")
