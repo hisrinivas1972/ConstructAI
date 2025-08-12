@@ -21,13 +21,13 @@ def app():
     prompt = st.text_area("Enter a safety scenario, observation, or concern:")
 
     if st.button("Analyze Safety"):
-        if not prompt:
+        if not prompt.strip():
             st.warning("Please enter a scenario or observation to analyze.")
             return
 
         try:
-            model = genai.GenerativeModel("models/chat-bison-001")  # or other valid model name
-            response = model.generate_content(prompt)
+            model = genai.GenerativeModel("models/chat-bison-001")
+            response = model.generate_text(prompt=prompt)
             st.subheader("🧠 AI Safety Analysis")
             st.write(response.text)
         except Exception as e:
