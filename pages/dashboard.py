@@ -9,8 +9,5 @@ def app():
     if google_api_key:
         st.success("API key entered!")
         # Use google_api_key here for your API calls
-        # For example:
-        # response = your_google_api_call(google_api_key)
-        # st.write("API response:", response)
     else:
         st.warning("Please enter your API key to use the app.")
