@@ -1,24 +1,52 @@
 import streamlit as st
-import time
+import google.generativeai as genai
 
 def app():
     st.title("Material Estimator")
-    google_api_key = st.secrets["google_api_key"]
+    st.write("Estimate construction materials based on project details.")
 
-    project_desc = st.text_area("Project Description", height=200,
-        placeholder="E.g., 'Build a 20x30 foot wooden shed...'")
+    # Get the API key from session state
+    google_api_key = st.session_state.get("google_api_key", "")
+    if not google_api_key:
+        st.warning("⚠️ Please enter your Google API key on the Dashboard first.")
+        return
+
+    # Configure Generative AI with the user’s key
+    try:
+        genai.configure(api_key=google_api_key)
+    except Exception as e:
+        st.error(f"API Key Error: {e}")
+        return
+
+    st.success("✅ API key loaded. Gemini AI is ready.")
+
+    # Example prompt
+    example_prompt = (
+        "Estimate the quantity of concrete, steel, and bricks needed for a "
+        "two-story residential building with 2000 sq ft floor area."
+    )
+
+    option = st.radio(
+        "Choose an option:",
+        ("Use example estimation", "Provide project details")
+    )
+
+    prompt = ""
+
+    if option == "Use example estimation":
+        prompt = example_prompt
+        st.info(f"Using example:\n\n{prompt}")
+    else:
+        prompt = st.text_area("Enter your project details for material estimation:")
 
     if st.button("Estimate Materials"):
-        if project_desc.strip() == "":
-            st.warning("Please enter project description.")
-        else:
-            with st.spinner("Estimating materials..."):
-                time.sleep(2)
-                # Call Google or other API here with google_api_key to estimate materials
-            st.markdown("""
-            **Material List:**  
-            - Concrete: 6 cubic yards  
-            - Lumber: 150 pieces  
-            - Asphalt Shingles: 12 bundles  
-            - Nails: 10 lbs  
-            """)
+        if not prompt:
+            st.warning("Please enter project details to estimate materials.")
+            return
+        try:
+            model = genai.GenerativeModel("gemini-pro")
+            response = model.generate_content(prompt)
+            st.subheader("🧮 Material Estimation Result")
+            st.write(response.text)
+        except Exception as e:
+            st.error(f"AI Error: {e}")
