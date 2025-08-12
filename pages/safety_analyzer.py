@@ -5,6 +5,7 @@ def app():
     st.title("Safety Analyzer")
     st.write("Analyze construction site safety using AI.")
 
+    # Get API key from session_state
     google_api_key = st.session_state.get("google_api_key", "")
     if not google_api_key:
         st.warning("⚠️ Please enter your Google API key on the Dashboard first.")
