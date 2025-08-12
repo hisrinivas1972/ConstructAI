@@ -43,7 +43,7 @@ def app():
             st.warning("Please enter floor plan requirements.")
             return
         try:
-            model = genai.GenerativeModel("gemini-pro")
+            model = genai.GenerativeModel("gemini-2.0-flash-exp-image-generation")
             response = model.generate_content(prompt)
             st.subheader("🏠 Generated Floor Plan")
             st.write(response.text)
