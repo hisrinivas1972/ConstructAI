@@ -1,2 +1,4 @@
-import streamlit as st
-import requests
+streamlit>=1.18.0
+requests
+google-cloud-aiplatform>=1.26.0
+google-auth>=2.20.0
